@@ -4,11 +4,29 @@
 # Reads PORT from the environment (Zeabur injects this automatically)
 # and binds to 0.0.0.0 so the platform reverse-proxy can reach the gateway.
 #
+# Injects HONGMACC_API_KEY into the config at runtime, then starts the gateway.
+#
 # Any extra CLI flags passed to the container are forwarded as-is.
 
 set -e
 
 PORT="${PORT:-8080}"
+
+# ---------- Inject openclaw.json with real API key ----------
+CONFIG_DIR="${HOME}/.openclaw"
+mkdir -p "$CONFIG_DIR"
+
+if [ -f /app/openclaw.json ]; then
+  if [ -n "$HONGMACC_API_KEY" ]; then
+    sed "s/__HONGMACC_API_KEY__/${HONGMACC_API_KEY}/g" \
+      /app/openclaw.json > "$CONFIG_DIR/openclaw.json"
+    echo "[entrypoint] openclaw.json written to $CONFIG_DIR with HONGMACC_API_KEY injected."
+  else
+    cp /app/openclaw.json "$CONFIG_DIR/openclaw.json"
+    echo "[entrypoint] WARNING: HONGMACC_API_KEY not set – config copied with placeholder."
+  fi
+fi
+# ---------------------------------------------------------------
 
 exec node openclaw.mjs gateway \
   --allow-unconfigured \
