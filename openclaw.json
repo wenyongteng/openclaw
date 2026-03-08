@@ -4,7 +4,8 @@
             "token": "__GATEWAY_TOKEN__"
         },
         "controlUi": {
-            "dangerouslyAllowHostHeaderOriginFallback": true
+            "dangerouslyAllowHostHeaderOriginFallback": true,
+            "dangerouslyDisableDeviceAuth": true
         }
     },
     "models": {
