@@ -12,9 +12,9 @@ set -e
 
 PORT="${PORT:-8080}"
 
-# Zeabur pod names are very long and crash Bonjour mDNS (>63 byte label limit).
-# Override with a short hostname for cloud deployments.
-export HOSTNAME="${OPENCLAW_HOSTNAME:-openclaw}"
+# Bonjour/mDNS is not needed in cloud deployments and crashes on Zeabur
+# due to long pod names exceeding the 63-byte DNS label limit.
+export OPENCLAW_DISABLE_BONJOUR=1
 
 # ---------- Inject openclaw.json with real API key ----------
 CONFIG_DIR="${HOME}/.openclaw"
