@@ -208,6 +208,15 @@ USER node
 #   - GET /healthz (liveness) and GET /readyz (readiness)
 #   - aliases: /health and /ready
 # For external access from host/ingress, override bind to "lan" and set auth.
+# Cloud-platform entrypoint (reads $PORT, binds 0.0.0.0).
+# Platforms like Zeabur set $PORT automatically; the entrypoint forwards it.
+COPY --chown=node:node docker-entrypoint.sh /app/docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
 HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+  CMD node -e "fetch('http://127.0.0.1:${PORT:-18789}/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+# Default: use the entrypoint script for cloud deployments.
+# Override with: docker run ... node openclaw.mjs gateway ... for custom setups.
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
+CMD []
