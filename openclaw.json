@@ -1,4 +1,9 @@
 {
+    "gateway": {
+        "controlUi": {
+            "dangerouslyAllowHostHeaderOriginFallback": true
+        }
+    },
     "models": {
         "mode": "merge",
         "providers": {
