@@ -1,5 +1,8 @@
 {
     "gateway": {
+        "auth": {
+            "token": "__GATEWAY_TOKEN__"
+        },
         "controlUi": {
             "dangerouslyAllowHostHeaderOriginFallback": true
         }

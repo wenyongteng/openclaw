@@ -25,6 +25,14 @@ if [ -f /app/openclaw.json ]; then
     cp /app/openclaw.json "$CONFIG_DIR/openclaw.json"
     echo "[entrypoint] WARNING: HONGMACC_API_KEY not set – config copied with placeholder."
   fi
+
+  # Inject gateway token (from Zeabur env var)
+  if [ -n "$OPENCLAW_GATEWAY_TOKEN" ]; then
+    sed -i "s/__GATEWAY_TOKEN__/${OPENCLAW_GATEWAY_TOKEN}/g" "$CONFIG_DIR/openclaw.json"
+    echo "[entrypoint] Gateway token injected from OPENCLAW_GATEWAY_TOKEN."
+  else
+    echo "[entrypoint] WARNING: OPENCLAW_GATEWAY_TOKEN not set – gateway will auto-generate a token."
+  fi
 fi
 # ---------------------------------------------------------------
 
